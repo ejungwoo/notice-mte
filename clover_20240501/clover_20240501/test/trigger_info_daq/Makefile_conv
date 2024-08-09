@@ -1,0 +1,41 @@
+FILENAME = convert_to_text
+
+EXE	=	$(FILENAME).exe
+
+CC	=	gcc
+
+COPTS	=	-fPIC -Wall
+
+FLAGS	=	-shared -Wall,-soname -nostartfiles -s
+
+LDFLAGS =        -O2 -Wall 
+
+OutPutOpt = -o 
+
+LIBS	=	-lm
+
+INCLUDEDIR =	-I$(NKHOME)/include
+
+INSTALLDIR     =	$(NKHOME)/bin
+INSTALLINCLUDE =	$(NKHOME)/include
+
+OBJS	=	$(FILENAME).o
+
+INCLUDES =	 
+
+
+#########################################################################
+
+all	:	$(EXE)
+clean	:
+		/bin/rm -f $(OBJS1) $(EXE1)
+
+$(EXE):      $(OBJS)
+		$(CC) $(LDFLAGS) $^ $(LIBS) $(OutPutOpt)$@
+		@echo "$@ done"
+
+$(OBJS)	:	$(INCLUDES) 
+
+%.o	:	%.c
+		$(CC) $(COPTS) $(INCLUDEDIR) -c -o $@ $<
+

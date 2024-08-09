@@ -1,0 +1,183 @@
+#include <unistd.h>
+#include <stdio.h>
+#include "NoticeLTE.h"
+#include "NoticeCLOVER.h"
+
+int main(int argc, char *argv[])
+{
+  int sid_lte = 0;
+  int sid;
+  int run_number;
+  int acq_time;
+  unsigned long link_status;
+  int num_of_adc;
+  int adc;
+  int adc_exist;
+  int mid[9];
+  char filename_adc[100];
+  char filename_tcb[100];
+  FILE *fp_adc;
+  FILE *fp_tcb;
+  unsigned long run;
+  unsigned long data_size;
+  int adc_data_written;
+  int tcb_data_written;
+  char *data;
+  
+  if (argc > 3) {
+    sid = atoi(argv[1]);
+    run_number = atoi(argv[2]);
+    acq_time = atoi(argv[3]);
+  }
+  else {
+    printf("Enter TCB sid : ");
+    scanf("%d", &sid);
+    printf("Enter run number(0~65535) : ");
+    scanf("%d", &run_number);
+    printf("Enter acquisition time(0~1,000,000s, 0 for infinite) : ");
+    scanf("%d", &acq_time);
+  }
+
+  // init usb
+  USB3Init();
+  
+  // open LTE
+  LTEopen(sid_lte);
+
+  // open DAQ
+  CLOVERopen(sid);
+
+  // reset DAQ
+  LTEreset(sid_lte);
+
+  // get link status and ADC mid
+  link_status = CLOVERread_LINK_STATUS(sid);
+  num_of_adc = 0;
+  for (adc = 0; adc < 9; adc++) {
+    adc_exist = link_status & (1 << adc);
+    if (adc_exist) {
+      mid[num_of_adc] = adc + 1;
+      num_of_adc = num_of_adc + 1;
+    }
+  }
+printf("link_status = %lX\n", link_status);
+
+  // set run number
+  LTEwrite_RUN_NUMBER(sid_lte, (unsigned long)run_number);
+  printf("run_number = %ld\n", LTEread_RUN_NUMBER(sid_lte));
+  
+  // set acquisition time
+  LTEwrite_ACQUISITION_TIME(sid_lte, (unsigned long)acq_time);
+  printf("acquisition time = %ld s\n", LTEread_ACQUISITION_TIME(sid_lte));
+  
+  // reset timer if necessary
+//  LTEresetTIMER(sid_lte);  
+
+  // open file
+  sprintf(filename_adc, "clover_adc_%d.dat", run_number);
+  sprintf(filename_tcb, "clover_tcb_%d.dat", run_number);
+  fp_adc = fopen(filename_adc, "wb"); 
+  fp_tcb = fopen(filename_tcb, "wb"); 
+  adc_data_written = 0;
+  tcb_data_written = 0;
+  
+  // assign data array
+  data = (char *)malloc(524288);
+  
+  // start DAQ
+  LTEstart(sid_lte);
+  run = LTEread_RUN(sid_lte);
+  printf("Run = %ld\n", run);
+  
+while(run) {  
+run = LTEread_RUN(sid_lte);
+}
+
+printf("Done!!\n");
+  
+  /*
+  while (run) {
+    // just for debugging
+//    LTEsend_TRIG(sid_lte);
+
+    // check TCB data size
+    data_size = CLOVERread_DATA_SIZE(sid, 0);
+   
+    // read TCB data
+    if (data_size) {
+      CLOVERread_DATA(sid, 0, data_size, data);
+      fwrite(data, 1, data_size * 1024, fp_tcb);
+      tcb_data_written = tcb_data_written + data_size;
+      printf("TCB %d kbytes are taken\n", tcb_data_written);
+    }
+
+    for (adc = 0; adc < num_of_adc; adc++) {
+      // check ADC data size
+      data_size = CLOVERread_DATA_SIZE(sid, mid[adc]);
+   
+      // read ADC data
+      if (data_size) {
+        CLOVERread_DATA(sid, mid[adc], data_size, data);
+        fwrite(data, 1, data_size * 1024, fp_adc);
+        adc_data_written = adc_data_written + data_size;
+        printf("ADC %d kbytes are taken\n", adc_data_written);
+      }
+    }
+
+    run = CLOVERread_RUN(sid);
+  }
+  
+  printf("DAQ is stopped and read remaining data\n");
+
+  // read remaining data  
+  // check TCB data size
+  data_size = CLOVERread_DATA_SIZE(sid, 0);
+   
+  // read TCB data
+  if (data_size) {
+    CLOVERread_DATA(sid, 0, data_size, data);
+    fwrite(data, 1, data_size * 1024, fp_tcb);
+    tcb_data_written = tcb_data_written + data_size;
+    printf("TCB %d kbytes are taken\n", tcb_data_written);
+  }
+
+  for (adc = 0; adc < num_of_adc; adc++) {
+    data_size = 16;
+    while (data_size) {
+      // check ADC data size
+      data_size = CLOVERread_DATA_SIZE(sid, mid[adc]);
+   
+      // read ADC data
+      if (data_size) {
+        CLOVERread_DATA(sid, mid[adc], data_size, data);
+        fwrite(data, 1, data_size * 1024, fp_adc);
+        adc_data_written = adc_data_written + data_size;
+        printf("ADC %d kbytes are taken\n", adc_data_written);
+      }
+    }
+  }    
+  */
+  
+  // release data array
+  free(data);
+
+  // close file
+  fclose(fp_adc);
+  fclose(fp_tcb);
+
+  // reset DAQ
+  LTEreset(sid_lte);
+
+  // close LTE
+  LTEclose(sid_lte);
+  
+  // close DAQ
+  CLOVERclose(sid);
+  
+  // close usb
+  USB3Exit();
+  
+  return 0;
+}
+
+

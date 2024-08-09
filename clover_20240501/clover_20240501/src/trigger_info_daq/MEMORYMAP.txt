@@ -1,0 +1,72 @@
+<Data format>
+1. LTE data (= 16 byte)
+   -----------------------------------
+   LTE trigger #(4 byte)
+   LTE trigger type(1 byte)
+   LTE trigger fine time(1 byte)
+   LTE trigger coarse time(3 byte)
+   Local trigger fine time(1 byte)
+   Local trigger coarse time(6 byte)
+   -----------------------------------
+
+2. NIM data (= 16 byte)
+   -----------------------------------
+   NIM trigger #(4 byte)
+   NIM channel # (1 byte)
+   Reserved(4 byte)
+   Local trigger fine time(1 byte)
+   Local trigger coarse time(6 byte)
+   -----------------------------------
+
+<Memorymap>
+========================================================
+ADDRESS		CONTENTS	
+========================================================
+0x0000-0x7FFF	Data
+--------------------------------------------------------
+0x8000		Data size/latch		W[]/R[11:0]
+--------------------------------------------------------
+0x8002		Run			R[0]
+--------------------------------------------------------
+0x8004		Run #			R[15:0]
+--------------------------------------------------------
+0x8006		Enable pass		W[0]/R[0]
+========================================================
+
+<Flash memory>
+sector0~5 = FPGA
+sector6   = VME address
+sector7   = TPC/IP address
+
+<Flash command>
+1. FPGA write (send = 4 byte, receive = 1 byte)
+   send : 1 -> addr -> data_lsb -> data msb
+   receive : 0x00
+
+2. FPGA single read (send = 2 byte, receive = 2 byte)
+   send : 2 -> addr
+   receive : data_lsb -> data_msb
+
+3. FPGA block read (send = 4 byte, receive = N byte)
+   send : 3 -> addr -> Nbyte_lsb -> Nbyte_msb
+   receive : data(Nbyte, LSB first)
+
+11. Unprotect flash memory (send = 1 byte, receive = 1 byte)
+   send : 11 
+   receive : 0x00
+
+12. Protect flash memory (send = 1 byte, receive = 1 byte)
+   send : 12 
+   receive : 0x00
+
+13. Erase flash memory (send = 2 byte, receive = 1 byte)
+   send : 13 -> sector 
+   receive : 0x00
+
+14. Write flash memory (send = 259 byte, receive = 1 byte)
+   send : 14 -> sector -> page -> data[256 byte]
+   receive : 0x00
+
+15. Read flash memory (send = 3 byte, receive = 256 byte)
+   send : 15 -> sector -> page
+   receive : data[256 byte]

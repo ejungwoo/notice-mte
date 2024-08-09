@@ -1,0 +1,44 @@
+2000
+1
+15
+0
+1000
+1
+1
+4000
+6000
+50000
+0.15
+2.50
+1.45
+100
+0
+20000
+10000
+3000
+0
+1
+5000
+------------------------------------------------------------------------------------
+1. TCB coincidence width in ns, 8 ~ 32760 ns
+2. TCB multiplicity threshold, 1 ~ 511
+3. TCB trigger enable, 1 = self, 2 = pedestal, 4 = software, 8 = external (ex, 15 for all enabled)
+4. TCB pedestal trigger interval in ms, 0 ~ 65535 ms, 0 for disable pedestal trigger
+5. ADC coincidence width in ns, 8 ~ 8184 ns
+6. ADC input polarity, 0 = negative, 1 = positive
+7. ADC multiplicity threshold, 1 ~ 32
+8. ADC trapezoidal filter rise time in ns, 32 ~ 8160 ns
+9. ADC trapezoidal filter flat top in ns, 32 ~ 8160 ns
+10. ADC input pulse decay time in ns, 512 ~ 130560 ns
+11. ADC RC-CR2 filter RC coefficient, 0 ~ 0.999
+12. ADC RC-CR2 filter CR gain, 0.001 ~ 3.999
+13. ADC RC-CR2 filter CR2 gain, 0.001 ~ 3.999
+14. ADC discriminator threshold, 1 ~ 65535, can set channel by channel
+15. ADC trigger mode, 0 = triggered by multiplicity, 1 = triggered by channel 1
+16. ADC gate width in ns, 8 ~ 65528 ns
+17. ADC waveform prescale, 1 ~ 65535, 0 for disable waveform save
+18. ADC delay in ns, 0 ~ 32760 ns
+19. ADC zero suppression for waveform, 0 = not suppress, 1 = suppress
+20. ADC waveform selection, 0 = input, 1 = trapezoidal filter, 2 = RC-CR filter, 3 = RC-CR2 filter
+21. ADC offset, 0 ~ 65535, can set channel by channel
+

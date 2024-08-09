@@ -1,0 +1,4 @@
+*.tar
+clover_*.dat
+*.o
+*.exe
