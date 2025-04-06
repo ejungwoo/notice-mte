@@ -1,0 +1,48 @@
+2000
+1
+1000
+0
+1
+6000
+4000
+55000
+0.15
+2.50
+1.45
+50
+0
+20000
+0
+5000
+1
+1
+15000
+16
+8000
+0
+1
+------------------------------------------------------------------------------------
+1. TCB coincidence width in ns, 8 ~ 32760 ns
+2. TCB multiplicity threshold, 1 ~ 511
+3. ADC coincidence width in ns, 8 ~ 8184 ns
+4. ADC input polarity, 0 = negative, 1 = positive
+5. ADC multiplicity threshold, 1 ~ 32
+6. ADC trapezoidal filter rise time in ns, 32 ~ 8160 ns, can set channel by channel
+7. ADC trapezoidal filter flat top in ns, 32 ~ 8160 ns, can set channel by channel
+8. ADC input pulse decay time in ns, 512 ~ 130560 ns, can set channel by channel
+9. ADC RC-CR2 filter RC coefficient, 0 ~ 0.999
+10. ADC RC-CR2 filter CR gain, 0.001 ~ 3.999
+11. ADC RC-CR2 filter CR2 gain, 0.001 ~ 3.999
+12. ADC discriminator threshold, 1 ~ 65535, can set channel by channel
+13. ADC trigger mode, 0 = triggered by multiplicity, 1 = triggered by channel 1
+14. ADC gate width in ns, 8 ~ 65528 ns
+15. ADC waveform prescale, 1 ~ 65535, 0 for disable waveform save
+16. ADC delay in ns, 0 ~ 32760 ns
+17. ADC zero suppression for waveform, 0 = not suppress, 1 = suppress
+18. ADC waveform selection, 0 = input, 1 = trapezoidal filter, 2 = RC-CR filter, 3 = RC-CR2 filter
+19. ADC offset, 0 ~ 65535, can set channel by channel
+20. ADC peak sum width, 8 ~ 8184 ns, can set channel by channel
+21. ADC peak sum delay, 8 ~ 16376 ns, can set channel by channel
+22. ADC peak sum mode, 0 = delay & sum, 1 = find max of sum in flat-top region
+23. ADC fast DAQ data, 0 = not take, 1 = take
+

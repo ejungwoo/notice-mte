@@ -1,0 +1,10 @@
+2000
+1
+15
+0
+------------------------------------------------------------------------------------
+1. LTE coincidence width in ns, 8 ~ 32760 ns
+2. LTE multiplicity threshold, 1 ~ 2880
+3. LTE trigger enable, 1 = self, 2 = pedestal, 4 = software, 8 = external (ex, 15 for all enabled)
+4. LTE pedestal trigger interval in ms, 0 ~ 65535 ms, 0 for disable pedestal trigger
+
