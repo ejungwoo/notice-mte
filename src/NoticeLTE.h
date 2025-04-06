@@ -37,6 +37,13 @@ extern "C" {
   extern int LTEread_MID(int sid, int ch);
   extern void LTEwrite_ECHO(int sid, unsigned long data);
   extern unsigned long LTEread_ECHO(int sid);
+  extern void LTEwrite_OUTPUT_WIDTH(int sid, unsigned long data);
+  extern unsigned long LTEread_OUTPUT_WIDTH(int sid);
+  extern unsigned long LTEread_TAG_DATA_SIZE(int sid);
+  extern unsigned long LTEread_COUNT_DATA_SIZE(int sid);
+  extern void LTEread_TAG_DATA(int sid, unsigned long data_size, char *data);
+  extern void LTEread_COUNT_DATA(int sid, unsigned long data_size , char *data);
+  
 
 #ifdef __cplusplus
 }

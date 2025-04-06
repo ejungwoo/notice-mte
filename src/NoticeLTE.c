@@ -241,7 +241,6 @@ int USB3Read_i_LTE(int sid, unsigned long count, unsigned long addr, unsigned ch
   buffer[7] = (addr >> 24)  & 0x7F;
   buffer[7] = buffer[7] | 0x80;
 
-  fprintf(stderr, "+%d %s #\n" , __LINE__, __FILE__);
   if (debugging) fprintf(stderr, "+%d %s # %d\n" , __LINE__, __FILE__, sid);
   libusb_device_handle *devh = nkusb_get_device_handle_LTE(sid);
   if (debugging) fprintf(stderr, "+%d %s # %p\n" , __LINE__, __FILE__, devh);
@@ -258,7 +257,6 @@ int USB3Read_i_LTE(int sid, unsigned long count, unsigned long addr, unsigned ch
     return stat;
   }
 
-  fprintf(stderr, "+%d %s #\n" , __LINE__, __FILE__);
   for (loop = 0; loop < nbulk; loop++) {
     if (debugging_transfer) fprintf(stderr, "+%d %s #[libusb_bulk_transfer]\n", __LINE__, __FILE__);
     if ((stat = libusb_bulk_transfer(devh, 0x82, buffer, size, &transferred, timeout)) < 0) {
@@ -269,7 +267,7 @@ int USB3Read_i_LTE(int sid, unsigned long count, unsigned long addr, unsigned ch
     memcpy(data + loop * size, buffer, size);
   }
 
-  fprintf(stderr, "+%d %s #\n" , __LINE__, __FILE__);
+  if (debugging_run) fprintf(stderr, "+%d %s #\n", __LINE__, __FILE__);
   if (remains) {
     if (debugging_transfer) fprintf(stderr, "+%d %s #[libusb_bulk_transfer]\n", __LINE__, __FILE__);
     if ((stat = libusb_bulk_transfer(devh, 0x82, buffer, remains * 4, &transferred, timeout)) < 0) {
@@ -280,7 +278,7 @@ int USB3Read_i_LTE(int sid, unsigned long count, unsigned long addr, unsigned ch
 
     memcpy(data + nbulk * size, buffer, remains * 4);
   }
-  fprintf(stderr, "+%d %s #\n" , __LINE__, __FILE__);
+  if (debugging_run) fprintf(stderr, "+%d %s #\n", __LINE__, __FILE__);
 
   free(buffer);
   
@@ -644,5 +642,38 @@ unsigned long LTEread_ECHO(int sid)
 {
   return USB3Read_LTE(sid, 0x2000000F);
 }
+
+void LTEwrite_OUTPUT_WIDTH(int sid, unsigned long data)
+{
+  USB3Write_LTE(sid, 0x20000009, data);
+}
+
+unsigned long LTEread_OUTPUT_WIDTH(int sid)
+{
+  return USB3Read_LTE(sid, 0x20000009);
+}
+
+unsigned long LTEread_TAG_DATA_SIZE(int sid)
+{
+  return USB3Read_LTE(sid, 0x30000000);
+}
+
+unsigned long LTEread_COUNT_DATA_SIZE(int sid)
+{
+  return USB3Read_LTE(sid, 0x30000001);
+}
+
+void LTEread_TAG_DATA(int sid, unsigned long data_size, char *data)
+{
+  USB3Read_i_LTE(sid, data_size, 0x40000000, data);
+}
+
+void LTEread_COUNT_DATA(int sid, unsigned long data_size , char *data)
+{
+  USB3Read_i_LTE(sid, data_size, 0x40000001, data);
+}
+
+
+
 
 

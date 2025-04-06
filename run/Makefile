@@ -12,8 +12,8 @@ INCLUDES  = -I$(NKHOME)/include -I$(LIBUSB_INC)
 OutPutOpt = -o
 
 # === Targets ===
-TARGETS   = set_LTE.exe run_CLOVER.exe
-OBJS      = set_LTE.o run_CLOVER.o
+TARGETS   = set_LTE.exe run_CLOVER.exe convert.exe
+OBJS      = set_LTE.o run_CLOVER.o convert.o
 
 INSTALLDIR = $(NKHOME)/bin
 

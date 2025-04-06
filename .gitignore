@@ -1,5 +1,8 @@
 *.o
 *.so
 *.exe
+*.dat
+*.txt
+bin
 lib
 include
