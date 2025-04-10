@@ -1,0 +1,22 @@
+# Note
+- Install libusb
+- Use root account for usb connection
+
+# Using notice-mte for the first time
+cd source
+make 
+make install
+cd ..
+source notice-mte.sh
+#echo source notice-mte.sh >> ~/.bashrc 
+cd macros
+make
+./go.sh # will create data/lte_tag*.dat and data/lte_count*.dat with given run number
+# use Ctrl+c to stop the run
+root read_scaler.C -- 77 # for reading and drawing lte_count_77.dat
+
+# If compiled already
+source notice-mte.sh
+cd macros
+./go.sh
+root read_scaler.C -- 77 # for reading and drawing lte_count_77.dat
