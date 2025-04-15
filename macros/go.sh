@@ -1,2 +1,2 @@
 ./init.exe
-./run.exe
+./run.exe $1

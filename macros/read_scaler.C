@@ -6,10 +6,12 @@ void signalHandler(int signum) {
 
 void read_scaler(int run_number=204, bool always_break=true, double threshold1=0, double threshold2=DBL_MAX)
 {
+    gStyle -> SetTitleFontSize(0.5);
+
     TString pathData = "data";
     const int numChannels = 16;
     vector<int> lfChannels = {0,1,2};
-    bool debugging = true;
+    bool debugging = false;
     bool drawOnScreen = true;
     double sleepForSec = 2;
 
@@ -29,12 +31,13 @@ void read_scaler(int run_number=204, bool always_break=true, double threshold1=0
         if (lfChannels.size()>9) { cvs = new TCanvas("cvs","",1500,800); cvs -> Divide(4,3); }
         if (lfChannels.size()>6) { cvs = new TCanvas("cvs","",1500,800); cvs -> Divide(4,2); }
         if (lfChannels.size()>4) { cvs = new TCanvas("cvs","",1500,800); cvs -> Divide(3,2); }
-        else                     { cvs = new TCanvas("cvs","",1500,800); cvs -> Divide(2,2); }
+        if (lfChannels.size()>3) { cvs = new TCanvas("cvs","",1200,800); cvs -> Divide(2,2); }
+        else                     { cvs = new TCanvas("cvs","",800,1800); cvs -> Divide(1,3); }
     }
 
     TString fnConfig = Form("%s/run_config.txt",pathData.Data());
     TString fnScaler = Form("%s/lte_count_%d.dat",pathData.Data(),run_number);
-    TString fnSummary = Form("summary/summary_%d.dat",run_number);
+    TString fnSummary = Form("%s/summary_count_%d.dat",pathData.Data(),run_number);
     cout << "== Reading config file" << endl;
     cout << fnConfig << endl;
 
@@ -46,7 +49,7 @@ void read_scaler(int run_number=204, bool always_break=true, double threshold1=0
         int run_number_;
         double threshold1_, threshold2_;
         while (fileConfig >> run_number_ >> threshold1_ >> threshold2_) {
-            cout << run_number_ << " " << threshold1_ << " " << threshold2_ << endl;
+            //cout << run_number_ << " " << threshold1_ << " " << threshold2_ << endl;
             if (run_number==run_number_ && threshold1_>=0 && threshold2_>=0) {
                 threshold1 = threshold1_;
                 threshold2 = threshold2_;
@@ -65,10 +68,11 @@ void read_scaler(int run_number=204, bool always_break=true, double threshold1=0
         graphScaler[iChannel] = new TGraph();
         auto graph = graphScaler[iChannel];
         graph -> SetMarkerStyle(20);
-        graph -> SetMarkerColor(iChannel+1);
-        graph -> SetLineColor(iChannel+1);
+        graph -> SetMarkerColor(iChannel+3);
+        graph -> SetLineColor(iChannel+3);
     }
 
+    int countWaiting = 0;
     while (true)
     {
         ////////////////////////////////////////
@@ -83,7 +87,7 @@ void read_scaler(int run_number=204, bool always_break=true, double threshold1=0
         if (debugging) cout << "== File size is " << file_size << " (prev. " << file_size_old << ")" << endl;
         if (file_size==file_size_old)
         {
-            cout << "waiting for " << sleepForSec << " seconds ... Press (Ctrl+C) to end reading" << endl;
+            cout << "Waiting(" << countWaiting++ << ") for " << sleepForSec << " seconds ... Press (Ctrl+C) to end reading" << endl;
             usleep(sleepForSec*1000000);
             if (signalInterrupted)
                 break;
@@ -138,7 +142,8 @@ void read_scaler(int run_number=204, bool always_break=true, double threshold1=0
             cvs -> Update();
         }
 
-        if (signalInterrupted || always_break) {
+        if (signalInterrupted || always_break)
+        {
             for (auto iChannel : lfChannels)
             {
                 int numValidEvents = graphScaler[iChannel] -> GetN();
@@ -148,5 +153,16 @@ void read_scaler(int run_number=204, bool always_break=true, double threshold1=0
             }
             break;
         }
+    }
+
+    cout << "Writting summary file" << endl;
+    cout << fnSummary << endl;
+    ofstream fileSummary(fnSummary);
+    for (auto iChannel : lfChannels)
+    {
+        int numValidEvents = graphScaler[iChannel] -> GetN();
+        double countMean = countSumInEvent[iChannel] / numValidEvents;
+        double countStdv = sqrt(countSOSInEvent[iChannel]/numValidEvents - countMean*countMean);
+        fileSummary << iChannel << " " << countMean << " " << countStdv << endl;
     }
 }

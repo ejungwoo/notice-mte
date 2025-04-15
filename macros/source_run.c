@@ -33,7 +33,10 @@ int main(int argc, char *argv[])
     char *tag_data;
     char *count_data;
 
-    if (argc > 3) {
+    if (argc == 2) {
+        run_number = atoi(argv[1]);
+    }
+    else if (argc > 3) {
         sid = atoi(argv[1]);
         run_number = atoi(argv[2]);
         acq_time = atoi(argv[3]);
@@ -80,8 +83,8 @@ int main(int argc, char *argv[])
     // open file
     sprintf(tag_filename, "data/lte_tag_%d.dat", run_number);
     sprintf(count_filename, "data/lte_count_%d.dat", run_number);
-    tag_fp = fopen(tag_filename, "wb");
-    count_fp = fopen(count_filename, "wb");
+    //tag_fp = fopen(tag_filename, "wb");
+    //count_fp = fopen(count_filename, "wb");
     tag_evt = 0;
     count_evt = 0;
 
@@ -94,10 +97,19 @@ int main(int argc, char *argv[])
     run = LTEread_RUN(sid);
     printf("Run = %ld\n", run);
 
+    int counter=0;
     while (run) {
         // just for debugging
         //    LTEsend_TRIG(sid_lte);
-
+        if (counter==0) {
+            tag_fp = fopen(tag_filename, "wb");
+            count_fp = fopen(count_filename, "wb");
+            counter = 1;
+        }
+        else {
+            tag_fp = fopen(tag_filename, "awb");
+            count_fp = fopen(count_filename, "awb");
+        }
         // check tag data size
         tag_data_size = LTEread_TAG_DATA_SIZE(sid);
 
@@ -128,6 +140,9 @@ int main(int argc, char *argv[])
             printf("count data : %d events are taken\n", count_evt);
         }
 
+        fclose(tag_fp);
+        fclose(count_fp);
+
         // check run
         run = LTEread_RUN(sid);
 
@@ -153,6 +168,9 @@ int main(int argc, char *argv[])
         tag_evt = tag_evt + tag_data_size / 4;    // 1 event = 16 bytes
         printf("tag data : %d events are taken\n", tag_evt);
     }
+
+    tag_fp = fopen(tag_filename, "awb");
+    count_fp = fopen(count_filename, "awb");
 
     // check count data size
     count_data_size = LTEread_COUNT_DATA_SIZE(sid);
