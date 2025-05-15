@@ -6,7 +6,7 @@ int main(void)
 {
     int debugging = 0;
     int sid = 0;
-    unsigned long lte_link_status;
+    unsigned long mte_link_status;
     int num_of_tcb;
     int tcb;
     int tcb_exist;
@@ -27,11 +27,11 @@ int main(void)
     LTEopen(sid);
 
     // get LTE link status and TCB mid
-    lte_link_status = LTEread_LINK_STATUS(sid);
-    printf("LTE link status = %lX\n", lte_link_status);
+    mte_link_status = LTEread_LINK_STATUS(sid);
+    printf("LTE link status = %lX\n", mte_link_status);
     num_of_tcb = 0;
     for (tcb = 0; tcb < 9; tcb++) {
-        tcb_exist = lte_link_status & (1 << tcb);
+        tcb_exist = mte_link_status & (1 << tcb);
         if (tcb_exist) {
             mid_tcb[num_of_tcb] = LTEread_MID(sid, tcb);;
             printf("TCB[sid = %d] is found @ slot %d\n", mid_tcb[num_of_tcb], tcb + 1);
@@ -44,7 +44,7 @@ int main(void)
 
     // read settings
     if (debugging) fprintf(stderr, "+%d %s #\n", __LINE__, __FILE__);
-    fp = fopen("data/setup_lte.txt", "rt");
+    fp = fopen("data/setup_mte.txt", "rt");
     fscanf(fp, "%ld", &cw);
     fscanf(fp, "%ld", &mthr);
     fscanf(fp, "%ld", &trig_enable);

@@ -78,11 +78,11 @@ int main(int argc, char *argv[])
     printf("acquisition time = %ld s\n", LTEread_ACQUISITION_TIME(sid));
 
     // reset timer if necessary
-    //  LTEresetTIMER(sid_lte);  
+    //  LTEresetTIMER(sid_mte);
 
     // open file
-    sprintf(tag_filename, "data/lte_tag_%d.dat", run_number);
-    sprintf(count_filename, "data/lte_count_%d.dat", run_number);
+    sprintf(tag_filename, "data/mte_tag_%d.dat", run_number);
+    sprintf(count_filename, "data/mte_count_%d.dat", run_number);
     //tag_fp = fopen(tag_filename, "wb");
     //count_fp = fopen(count_filename, "wb");
     tag_evt = 0;
@@ -100,7 +100,7 @@ int main(int argc, char *argv[])
     int counter=0;
     while (run) {
         // just for debugging
-        //    LTEsend_TRIG(sid_lte);
+        //    LTEsend_TRIG(sid_mte);
         if (counter==0) {
             tag_fp = fopen(tag_filename, "wb");
             count_fp = fopen(count_filename, "wb");

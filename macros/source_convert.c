@@ -20,8 +20,8 @@ int main(int argc, char *argv[])
     int i;
 
     if (argc > 1) {
-        sprintf(data_filename, "data/lte_tag_%s.dat", argv[1]);
-        sprintf(text_filename, "data/lte_tag_%s.txt", argv[1]);
+        sprintf(data_filename, "data/mte_tag_%s.dat", argv[1]);
+        sprintf(text_filename, "data/mte_tag_%s.txt", argv[1]);
     }
     else {
         printf("./convert_tag_to_text.exe data_file_name(without extension)\n");

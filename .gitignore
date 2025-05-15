@@ -3,6 +3,11 @@
 *.exe
 *.dat
 *.txt
+*.png
+*.eps
+*.pdf
+*.jpg
+*.jpeg
 bin
 lib
 include
